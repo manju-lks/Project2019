@@ -12,22 +12,27 @@ vcf_sample7_snp = vcf.Reader(open("sample7_final_filtered_snps.vcf","r"))
 lis_vcfs=[vcf_sample1_snp, vcf_sample2_snp, vcf_sample3_snp, vcf_sample4_snp, vcf_sample5_snp,
           vcf_sample6_snp, vcf_sample7_snp]
 
+def common_mutations(list_vcfs):
+
 #A list of lists with chromosome, positions, reference and alternate alleles
 
-res_list=[]
-for vcff in lis_vcfs:
-	for record in vcff:
-		res_list.append([record.CHROM, record.POS, record.REF,
-                         ' '.join([str(elem) for elem in (record.ALT)])])
+	res_list=[]
+	for vcff in list_vcfs:
+		for record in vcff:
+			res_list.append([record.CHROM, record.POS, record.REF,
+                         	' '.join([str(elem) for elem in (record.ALT)])])
 
 #count of occurence of each list
 #if the count is equal to the number of input files they are taken as common ones 
 
-n=len(lis_vcfs)       
-counts=Counter(tuple(x) for x in res_list)
-val=[]
-for k in counts.keys():
-	if counts[k] == n:
-		val.append(k)
+	n=len(list_vcfs)       
+	counts=Counter(tuple(x) for x in res_list)
+	val=[]
+	for k in counts.keys():
+		if counts[k] == n:
+			val.append(k)
         
-print("number of snps common in all ", n, " files is ", len(val), " and they are, \n", val)
+	print("number of snps common in all ", n, " files is ", len(val), " and they are, \n", val)
+
+
+common_mutations(lis_vcfs)
