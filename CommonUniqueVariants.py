@@ -16,7 +16,7 @@ def parseVCF(vcffile):
 	sampleName = None
 	if len(samples) == 0:
 		print("No sample found, consolidating it as known_mutations")
-		sampleName = vcffile + "_known_mutations"
+		sampleName = vcffile.split("/")[-1].replace(".vcf", "") + "_known_mutations"
 
 	for record in vcfreader:
 		alts = record.ALT
@@ -30,7 +30,7 @@ def parseVCF(vcffile):
 
 		else:
 			for sample in samples:
-				sampleName = vcffile + "_" + sample
+				sampleName = vcffile.split("/")[-1].replace(".vcf", "") + "_" + sample
 				vcf_positions[sampleName].add(chrm + "_" + str(record.POS))
 				try:
 				    alts = record.genotype(sample).gt_bases.split("|")
@@ -87,6 +87,27 @@ def common_mutations(vcf_positions, vcf_variants, cosmicMutations):
 	print(pd.DataFrame(commonVariants).to_string())
 	print("COSMIC OVERLAP:", cosmicOverlap)
 
+	return (commonVariants, cosmicOverlap)
+
+def unique_mutations(vcf_variants):
+	samples = vcf_variants.keys()
+	vcf_exclusives = {}
+
+	## Unique variants in every sample
+	for sample1 in samples:
+		vcf_exclusives[sample1] = vcf_variants[sample1]
+		for sample2 in samples:
+			if sample1 == sample2:
+				continue
+			else:
+				vcf_exclusives[sample1] = vcf_exclusives[sample1] - vcf_variants[sample2]
+
+		fout = open(sample1 + "_uniqueVariants.txt", 'w')
+		for variant in vcf_exclusives[sample1]:
+			fout.writelines(variant + "\n")
+		fout.close()
+
+	return vcf_exclusives
 
 def main():
     parser = argparse.ArgumentParser()
@@ -100,7 +121,8 @@ def main():
     	parseVCF(eachVcf)
 
     cosmicMutations, cosmicMutationScores = parseCosmic(args.cosmic)
-    cvcfs_with_cosmic = common_mutations(vcf_positions, vcf_variants, cosmicMutations)
+    (commonVariants, cosmicOverlap) = common_mutations(vcf_positions, vcf_variants, cosmicMutations)
+    vcf_exclusives = unique_mutations(vcf_variants)
 
 if __name__ == "__main__":
     main()
