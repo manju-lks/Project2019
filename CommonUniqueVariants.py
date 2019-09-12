@@ -17,15 +17,6 @@ def parseVCF(vcffile):
 	if len(samples) == 0:
 		print("No sample found, consolidating it as known_mutations")
 		sampleName = vcffile + "_known_mutations"
-		# vcf_positions[sampleName] = set()
-		# vcf_variants[sampleName] = set()
-
-
-	for sample in samples:
-		if sample not in vcf_variants:
-			sampleName = vcffile + "_" + sample
-			# vcf_positions[sampleName] = []
-			# vcf_variants[sampleName] = []
 
 	for record in vcfreader:
 		alts = record.ALT
