@@ -9,6 +9,7 @@ import pandas as pd
 vcf_variants = defaultdict(set)
 vcf_positions = defaultdict(set)
 
+
 def parseVCF(vcffile):
 	vcfreader = vcf.Reader(open(vcffile))
 	samples = vcfreader.samples
@@ -16,14 +17,21 @@ def parseVCF(vcffile):
 	if len(samples) == 0:
 		print("No sample found, consolidating it as known_mutations")
 		sampleName = vcffile + "_known_mutations"
+		# vcf_positions[sampleName] = set()
+		# vcf_variants[sampleName] = set()
+
+
+	for sample in samples:
+		if sample not in vcf_variants:
+			sampleName = vcffile + "_" + sample
+			# vcf_positions[sampleName] = []
+			# vcf_variants[sampleName] = []
 
 	for record in vcfreader:
 		alts = record.ALT
 		chrm = record.CHROM.replace('chr', '')
 		chrm = chrm.replace('Chr', '')
-
-		if sampleName:
-			if "_known_mutations" in sampleName:
+		if sampleName and "_known_mutations" in sampleName:
 				vcf_positions[sampleName].add(chrm + "_" + str(record.POS))
 				alts = record.ALT
 				for alt in alts:
@@ -33,7 +41,10 @@ def parseVCF(vcffile):
 			for sample in samples:
 				sampleName = vcffile + "_" + sample
 				vcf_positions[sampleName].add(chrm + "_" + str(record.POS))
-				alts = record.genotype(sample).gt_bases.split("|")
+				try:
+				    alts = record.genotype(sample).gt_bases.split("|")
+				except:
+					continue
 				if len(alts) == 1:
 					alts = record.genotype(sample).gt_bases.split("/")
 				for alt in alts:
