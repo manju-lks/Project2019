@@ -1,0 +1,15 @@
+##fileformat=VCFv4.0
+##INFO=<ID=REF_COUNT,Number=1,Type=String,Description="# of mapped reads with reference allele">
+##INFO=<ID=ALT_COUNT,Number=1,Type=String,Description="# of mapped reads with alernative allele">
+##INFO=<ID=JunD,Number=0,Type=Flag,Description="ChIP sequencing, JunD peak">
+##INFO=<ID=Max,Number=0,Type=Flag,Description="ChIP sequencing, JMax peak">
+##INFO=<ID=NfkB,Number=0,Type=Flag,Description="ChIP sequencing, NfkB peak">
+##INFO=<ID=Pol_II,Number=0,Type=Flag,Description="ChIP sequencing, Pol_II peak">
+##INFO=<ID=Pol_III,Number=0,Type=Flag,Description="ChIP sequencing, Pol_III peak">
+##INFO=<ID=cFos,Number=0,Type=Flag,Description="ChIP sequencing, cFox peak">
+##INFO=<ID=cMyc,Number=0,Type=Flag,Description="ChIP sequencing, cMyc peak">
+##INFO=<ID=RNAseq,Number=0,Type=Flag,Description="RNA sequencing">
+##reference=NCBI36/hg18
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	NA12878
+1	35416	.	A	G	.	.	cFos;REF_COUNT=19;ALT_COUNT=4   GT      0/1
